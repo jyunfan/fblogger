@@ -1,0 +1,21 @@
+{
+  "manifest_version": 2,
+
+  "name": "FB Logger",
+  "description": "Log what you see on the Facebook",
+  "version": "0.1",
+
+  "content_scripts": [
+    {
+      "matches": ["https://*.facebook.com/*", "http://localhost:9200/*"],
+      "js": ["jquery.min.js", "fblogger.js"]
+    }
+  ],
+
+  "permissions": [
+    "https://localhost:8089/*",
+    "http://localhost:9200/*",
+    "https://*/*",
+    "http://*/*"
+  ]
+}
