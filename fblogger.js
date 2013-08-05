@@ -85,7 +85,6 @@ $(function(){
             r = this.attributes['data-ft'].textContent.match(/mf_story_key":"([\-\d]+)/);
             var id   = r[1];
             var user = $('div.actorDescription a', this).text();
-            //var msg  = $('span.messageBody, .uiStreamAttachments', this).text();
             var msg  = $('.uiStreamMessage, .uiStreamAttachments', this).text();
             var link = $('.uiStreamSource a', this).first().attr('href');
             //console.log(id,user,msg);
@@ -104,33 +103,41 @@ $(function(){
 
     // search
     $('#pagelet_home_stream').prepend(
-        $('<div>').append('<label>search</label>').append(
-            $('<input>').attr('type', 'text').keypress(function(event){
-                if(event.which == 13){
-                    event.preventDefault();
-                    var query = $(this).val();
-                    $.ajax({
-                        url:'http://jftsai.csie.org/facebook/post/_search',
-                        type:'POST',
-                        data:JSON.stringify({"query":{"text":{"msg":query}}}),
-                        success: function(data){
-                            var ul = $('#search_result').empty().append('<ul>').find('ul');
-                            $.map(data.hits.hits, function(i){
-                                var post = i._source;
-                                $('<li>').append(
-                                    //$('<div>').append($('<a>').text(post.user).attr('href', post.link)),
-                                    $('<div>').append($('<a>').text('link').attr('href', post.link)),
-                                    $('<div>').text(post.msg)
-                                )
-                                .css('margin', '5px')
-                                .appendTo(ul);
-                            });
-                        }
-                    });
-                    $(this).val('');
-                }
-            })
-        ).append('<div id="search_result">')
+        $('<div>').append(
+            '<label>search</label>',
+            '<input id="search_query", type="text">',
+            '<div id="search_result">'
+        )
     );
+
+    $('#search_query').keypress(function(event){
+        if(event.which != 13){
+            return;
+        }
+
+        var query = $(this).val();
+        $.ajax({
+            url: 'http://jftsai.csie.org/facebook/post/_search',
+            type: 'POST',
+            data: JSON.stringify({query: {text: {msg: query}}}),
+            success: function(data){
+                var ul = $('#search_result').empty().append('<ul>').find('ul');
+                $.map(data.hits.hits, function(i){
+                    var post = i._source;
+                    $('<li>').append(
+                        $('<a>').text('link').attr('href', post.link),
+                        ' ',
+                        post.msg
+                    )
+                    .css('margin', '5px')
+                    .appendTo(ul);
+                });
+            }
+        });
+
+        event.preventDefault();
+        $(this).val('');
+    });
+
 });
 
