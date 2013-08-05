@@ -85,7 +85,8 @@ $(function(){
             r = this.attributes['data-ft'].textContent.match(/mf_story_key":"([\-\d]+)/);
             var id   = r[1];
             var user = $('div.actorDescription a', this).text();
-            var msg  = $('span.messageBody, .uiStreamAttachments', this).text();
+            //var msg  = $('span.messageBody, .uiStreamAttachments', this).text();
+            var msg  = $('.uiStreamMessage, .uiStreamAttachments', this).text();
             var link = $('.uiStreamSource a', this).first().attr('href');
             //console.log(id,user,msg);
             if(id && user && msg){
@@ -117,9 +118,12 @@ $(function(){
                             $.map(data.hits.hits, function(i){
                                 var post = i._source;
                                 $('<li>').append(
-                                    $('<a>').text(post.user).attr('href', post.link),
-                                    ': ' + post.msg
-                                ).appendTo(ul);
+                                    //$('<div>').append($('<a>').text(post.user).attr('href', post.link)),
+                                    $('<div>').append($('<a>').text('link').attr('href', post.link)),
+                                    $('<div>').text(post.msg)
+                                )
+                                .css('margin', '5px')
+                                .appendTo(ul);
                             });
                         }
                     });
